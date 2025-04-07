@@ -5,7 +5,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({800, 600}), "Hexx");
+    sf::RenderWindow window(sf::VideoMode({1920, 1080}), "Hexx");
 
     while (window.isOpen())
     {
