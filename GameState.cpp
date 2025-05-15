@@ -6,6 +6,7 @@
 #include <map>
 #include <notification.h>
 #include <queue>
+#include <TurnHandler.h>
 
 namespace HEX {
     /// Gamestate(int, int) - constructor for custom sized boards (TODO)
@@ -16,11 +17,7 @@ namespace HEX {
     ///longestRow
 
 
-    GameState::GameState(const bool isAI, const float screenWidth, const float screenHeight) {
-        this->AI = isAI;
-        this->nodes = std::vector<HEX::HexNode>();
-        this->numberOfHexes = 61;
-        this->longestRow = 9;
+    GameState::GameState(const bool isAI, const float screenWidth, const float screenHeight) : nodes(std::vector<HEX::HexNode>()), AI(isAI), numberOfHexes(61), longestRow(9) {
         for (int i = 0; i < numberOfHexes; i++) {
             this->nodes.emplace_back(i, screenWidth, screenHeight);
         }
@@ -59,9 +56,10 @@ namespace HEX {
     }
 
     auto GameState::isGameOver() -> bool {
-        //requires game in progress!!!
         if (!isGameInProgress)
             return false;
+        if (const auto move = TurnHandler::findBestMove(*this, this->turn); move.first==nullptr&&move.second==nullptr)
+            return true;
         auto [player1Result, player2Result] = stats();
         if (player1Result == 0 || player2Result == 0) return true; //if any of the players doesn't have any hexes left
         for (const auto &i: this->nodes) {

@@ -84,14 +84,19 @@ auto HEX::TurnHandler::possibleMoves(HexNode &node) {
     return resSet;
 }
 
-std::pair<HEX::HexNode *, HEX::HexNode *> HEX::TurnHandler::findBestMove(GameState &gameState) {
+std::pair<HEX::HexNode *, HEX::HexNode *> HEX::TurnHandler::findBestMove(GameState &gameState, Turn turn) {
     //always assume computer is Player2
-    std::pair<HEX::HexNode *, HEX::HexNode *> bestMove;
+    State state;
+    if (turn==Turn::Player1)
+        state = State::Player1;
+    else
+        state = State::Player2;
+    std::pair<HEX::HexNode *, HEX::HexNode *> bestMove=std::make_pair(nullptr, nullptr);
     auto bestMoveEval = -1;
     for (auto &node: gameState.nodes) {
-        if (node.state == State::Player2)
+        if (node.state == state)
             for (auto [dest, isClone]: possibleMoves(node)) {
-                auto currMoveEval = evalMove(*dest, State::Player2) + isClone;
+                auto currMoveEval = evalMove(*dest, state) + isClone;
                 if (currMoveEval > bestMoveEval) {
                     bestMoveEval = currMoveEval;
                     bestMove = std::make_pair(&node, dest);

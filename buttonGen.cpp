@@ -63,6 +63,7 @@ auto ButtonGen::menuButtons(const sf::Font &font, HEX::GameState &gameState,
         drawMenu = false;
         drawSaveMenu = false;
         shouldUpdateGameList = true;
+        userInput = "";
     };
     menuButtons.push_back(Button("SAVE", {(screenWidth / 2) - 200, 650.0}, {400.0, 100.0}, sf::Color::Black,
                                  sf::Color::Red,
@@ -77,6 +78,7 @@ auto ButtonGen::menuButtons(const sf::Font &font, HEX::GameState &gameState,
     };
     menuButtons.push_back(Button("BEST GAMES", {(screenWidth / 2) - 200, 800.0}, {400.0, 100.0}, sf::Color::Black,
                                  sf::Color::Red, font));
+    menuButtons[5].action = [&gameState] {};
     menuButtons.push_back(Button("BACK", {screenWidth - 250, 200.0}, {250.0, 100.0}, sf::Color::Black, sf::Color::Red,
                                  font));
     menuButtons[6].action = [&gameState] {
@@ -133,11 +135,11 @@ auto ButtonGen::inGameButtons(const sf::Font &font, HEX::GameState &gameState) -
         lastPlayerMove = std::chrono::duration_cast<std::chrono::seconds>(
                     std::chrono::system_clock::now().time_since_epoch())
                 .count();
-    };
+     };
     return inGameButtons;
 }
 
-auto ButtonGen::saveButtons(const sf::Font &font, std::vector<std::pair<HEX::notification, sf::Text> > &notifications,
+auto ButtonGen::saveButtons(const sf::Font &font, std::vector<HEX::notification > &notifications,
                             const HEX::GameState &gameState) -> std::vector<Button> {
     auto saveButtons = std::vector<Button>();
     saveButtons.push_back(Button("Filename: ", sf::Vector2<float>(screenWidth / 2 - 250, 250), {500, 50},
@@ -145,9 +147,9 @@ auto ButtonGen::saveButtons(const sf::Font &font, std::vector<std::pair<HEX::not
 
     saveButtons.push_back(Button("SAVE", {screenWidth / 2 - 300, 800}, {200.0, 70.0}, sf::Color::Black, sf::Color::Red,
                                  font));
-    saveButtons[1].action = [&gameState,  &notifications, &font] {
+    saveButtons[1].action = [&gameState,  &notifications] {
         if (!gameState.isGameInProgress) {
-            notifications.push_back(HEX::notification::notificationToStringPair({HEX::notificationTypes::Error, "No game in progress to save"}, font));
+            notifications.emplace_back(HEX::notificationTypes::Error, "No game in progress to save");
             return;
         }
         if (FileHandler::checkIfValidFilename(userInput)) {
@@ -155,9 +157,8 @@ auto ButtonGen::saveButtons(const sf::Font &font, std::vector<std::pair<HEX::not
             drawSaveMenu = false;
             drawBoard = true;
         } else {
-            notifications.push_back(HEX::notification::notificationToStringPair(
-                HEX::notification(HEX::notificationTypes::Warning,
-                                  "Filename can not be empty"), font));
+            notifications.emplace_back(HEX::notificationTypes::Warning,
+                                  "Filename can not be empty");
         }
     };
     saveButtons.push_back(Button("BACK", {screenWidth / 2 + 100, 800}, {200.0, 70.0}, sf::Color::Black, sf::Color::Red,
@@ -184,7 +185,7 @@ auto ButtonGen::resultButtons(const sf::Font &font, HEX::GameState &gameState) -
     resultButtons.push_back(Button("SAVE", {screenWidth / 2 - 450, 700}, {200.0, 70.0}, sf::Color::Red,
                                    sf::Color::Black,
                                    font));
-    resultButtons[1].action = [&gameState] {
+    resultButtons[1].action = [] {
         drawBoard = false;
         drawMenu = false;
         drawLoadMenu = false;
@@ -205,9 +206,13 @@ auto ButtonGen::resultButtons(const sf::Font &font, HEX::GameState &gameState) -
     resultButtons.push_back(Button("MENU", {screenWidth / 2 + 250, 700}, {200.0, 70.0}, sf::Color::Red,
                                    sf::Color::Black,
                                    font));
-    resultButtons[3].action = [&gameState] {
+    resultButtons[3].action = [] {
         drawResult = false;
         drawMenu = true;
     };
     return resultButtons;
+}
+
+auto ButtonGen::bestGamesButtons(const sf::Font &font) {
+
 }

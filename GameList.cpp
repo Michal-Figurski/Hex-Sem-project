@@ -6,16 +6,16 @@
 
 auto GameView::move(const sf::Vector2f vector) -> void {
     rect.move(vector);
-    name->move(vector);
-    player1Res->move(vector);
-    player2Res->move(vector);
+    name.move(vector);
+    player1Res.move(vector);
+    player2Res.move(vector);
 }
 
 auto GameView::draw(sf::RenderWindow &window) const -> void {
     window.draw(rect);
-    window.draw(*name);
-    window.draw(*player1Res);
-    window.draw(*player2Res);
+    window.draw(name);
+    window.draw(player1Res);
+    window.draw(player2Res);
 }
 
 auto GameList::update(FileHandler &fileHandler, sf::Font &font, float screenWidth) -> void {
@@ -36,9 +36,9 @@ auto GameList::resetPositions(const float screenWidth) -> void {
     int index = 0;
     for (auto &i: gameViews) {
         i.rect.setPosition({screenWidth / 4, static_cast<float>(index * 220.0)});
-        i.name->setPosition({screenWidth / 2 - 100, static_cast<float>(index * 220.0 + 5)});
-        i.player1Res->setPosition({screenWidth / 2 - 100, static_cast<float>(index * 220.0 + 100)});
-        i.player2Res->setPosition({screenWidth / 2 + 100, static_cast<float>(index * 220.0 + 100)});
+        i.name.setPosition({screenWidth / 2 - 100, static_cast<float>(index * 220.0 + 5)});
+        i.player1Res.setPosition({screenWidth / 2 - 100, static_cast<float>(index * 220.0 + 100)});
+        i.player2Res.setPosition({screenWidth / 2 + 100, static_cast<float>(index * 220.0 + 100)});
         index++;
     }
 }

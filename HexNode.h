@@ -21,12 +21,7 @@ namespace HEX {
         sf::CircleShape hex = sf::CircleShape(40, 6);
         State state{};
 
-        HexNode(int count, float screenWidth, float screenHeight) {
-            hex = sf::CircleShape(screenHeight / 27, 6);
-            this->visited = false;
-            this->index = count;
-            this->neighbors = std::vector<HEX::HexNode *>();
-            this->state = State::Empty;
+        HexNode(int count, float screenWidth, float screenHeight): visited(false), index(count), neighbors(std::vector<HEX::HexNode *>()), state(State::Empty), hex(sf::CircleShape(screenHeight / 27, 6)) {
             hex.setOutlineColor(sf::Color::Red);
         }
 

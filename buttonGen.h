@@ -50,11 +50,12 @@ public:
 
     static auto inGameButtons(const sf::Font &font, HEX::GameState &gameState) -> std::vector<Button>;
 
-    static auto saveButtons(const sf::Font &font, std::vector<std::pair<HEX::notification, sf::Text> > &notifications,
-                            const HEX::GameState &
-                            gameState) -> std::vector<Button>;
+    static auto saveButtons(const sf::Font &font, std::vector<HEX::notification> &notifications,
+                            const HEX::GameState &gameState) -> std::vector<Button>;
 
     static auto resultButtons(const sf::Font &font, HEX::GameState &gameState) -> std::vector<Button>;
+
+    static auto bestGamesButtons(const sf::Font &font);//TODO
 };
 
 

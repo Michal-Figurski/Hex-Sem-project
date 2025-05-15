@@ -17,7 +17,7 @@
 
 void printVector(const std::vector<HEX::notification> &vec) {
     for (auto &i: vec) {
-        std::cout << i.message << " " << i.timestamp << "\n";
+        std::cout << std::string(i.message.getString()) << " " << i.timestamp << "\n";
     }
     std::cout << std::endl;
 }
@@ -30,7 +30,7 @@ int main() {
     auto gameState = HEX::GameState(false, screenWidth, screenHeight);
     auto fileHandler = FileHandler();
     auto gameList = GameList();
-    auto notifications = std::vector<std::pair<HEX::notification, sf::Text> >();
+    auto notifications = std::vector<HEX::notification>();
 
     //result
     auto resultButtons = ButtonGen::resultButtons(font, gameState);
@@ -85,18 +85,15 @@ int main() {
             if (drawSaveMenu) {
                 if (const auto *ev = event->getIf<sf::Event::KeyPressed>()) {
                     if (!((ev->code >= sf::Keyboard::Key::A && ev->code <= sf::Keyboard::Key::Z) || ev->code == sf::Keyboard::Key::Backspace)) {
-                        notifications.emplace_back(HEX::notification::notificationToStringPair({HEX::notificationTypes::Warning,
-                                                                         "Filename can only contain latin letters"}, font));
+                        notifications.emplace_back(HEX::notificationTypes::Warning,
+                                                                         "Filename can only contain latin letters");
                     }
                     if (ev->code >= sf::Keyboard::Key::A && ev->code <= sf::Keyboard::Key::Z) {
                         if (userInput.size() < 26) {
                             userInput += static_cast<char>(static_cast<char>(ev->code) + 97);
                         } else {
-                            auto text = sf::Text(font);
-                            text.setString("Filename can not be longer than 26 characters");
-                            notifications.emplace_back(HEX::notification(HEX::notificationTypes::Info,
-                                                                         text.getString()), text
-                            );
+                            notifications.emplace_back(HEX::notificationTypes::Info,
+                                                                         "Filename can not be longer than 26 characters");
                         }
                     }
                     if (ev->code == sf::Keyboard::Key::Backspace) {
@@ -207,8 +204,8 @@ int main() {
         if (shouldMakeMove) {
             auto error = HEX::TurnHandler::makeMove(gameState, *moveToMake.first, *moveToMake.second);
             if (error.has_value()) {
-                std::cerr << error.value().message;
-                notifications.push_back(HEX::notification::notificationToStringPair(*error, font));
+                //std::cerr << std::string(error.value().message.getString());
+                notifications.push_back(*error);
             } else {
                 lastPlayerMove = std::chrono::duration_cast<std::chrono::seconds>(
                             std::chrono::system_clock::now().time_since_epoch())
@@ -219,19 +216,18 @@ int main() {
         if (gameState.AI && gameState.turn1() == HEX::Turn::Player2 && difftime(
                 std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch())
                 .count(), lastPlayerMove) > 2) {
-            auto [src, dest] = HEX::TurnHandler::findBestMove(gameState);
+            auto [src, dest] = HEX::TurnHandler::findBestMove(gameState, gameState.turn1());
             //std::cout << stateToString(src->state) << " " << stateToString(dest->state) << '\n';
             auto error = HEX::TurnHandler::makeMove(gameState, *(src), *(dest), true);
             if (error.has_value()) {
                 //std::cerr << error.value().message;
-                notifications.push_back(HEX::notification::notificationToStringPair(*error, font));
+                notifications.push_back(*error);
             }
         }
 
         if (shouldSaveGame) {
             fileHandler.saveGame(gameState, userInput);
-            auto temp = new HEX::notification(HEX::notificationTypes::Info, "Game saved");
-            notifications.push_back(HEX::notification::notificationToStringPair(*temp, font));
+            notifications.emplace_back(HEX::notificationTypes::Info, "Game saved");
             shouldSaveGame = false;
         }
         if (shouldLoadGame) {
@@ -246,8 +242,7 @@ int main() {
                     turn = temp.second;
                 } catch (std::ios_base::failure &e) {
                     failed = true;
-                    notifications.push_back(
-                        HEX::notification::notificationToStringPair({HEX::notificationTypes::Error, e.what()}, font));
+                    notifications.emplace_back(HEX::notificationTypes::Error, e.what());
                 }
                 if (!failed) {
                     gameState.newGame(screenWidth, screenHeight);
@@ -285,8 +280,8 @@ int main() {
             //notifications
             int notificationIndex = 0;
             for (auto &notification: notifications) {
-                notification.second.setPosition({0, static_cast<float>(notificationIndex++) * 40});
-                window.draw(notification.second);
+                notification.message.setPosition({0, static_cast<float>(notificationIndex++) * 40});
+                notification.draw(window);
             }
         }
         if (drawMenu) {

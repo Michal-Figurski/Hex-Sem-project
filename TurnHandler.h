@@ -28,7 +28,7 @@ namespace HEX {
         static auto evalMove(const HexNode &node, State srcState) -> int;
 
         static auto possibleMoves(HexNode &node); //set pair[HexNode dest, int move or clone]
-        static auto findBestMove(GameState &gameState) -> std::pair<HexNode *, HexNode *>;
+        static auto findBestMove(GameState &gameState, Turn turn) -> std::pair<HexNode *, HexNode *>;
     };
 }
 #endif //TURNHANDLER_H

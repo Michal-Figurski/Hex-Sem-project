@@ -23,20 +23,26 @@ public:
 class GameView {
 public:
     sf::RectangleShape rect = sf::RectangleShape({1920.0 / 2, 200});
-    sf::Text *name;
-    sf::Text *player1Res;
-    sf::Text *player2Res;
+    sf::Text name;
+    sf::Text player1Res;
+    sf::Text player2Res;
     //sf::Text *date;
 
     GameView(std::string name, const std::pair<int, int> result, time_t date, const sf::Font &font,
-             const float screenWidth) {
+             const float screenWidth) : name(font), player1Res(font), player2Res(font) {
         rect.setSize(sf::Vector2f(screenWidth / 2, 200));
-        this->name = new sf::Text(font, name, 30);
-        this->name->setFillColor(sf::Color::Red);
-        this->player1Res = new sf::Text(font, "Player1: " + std::to_string(result.first), 20);
-        this->player1Res->setFillColor(sf::Color::Red);
-        this->player2Res = new sf::Text(font, "Player2: " + std::to_string(result.second), 20);
-        this->player2Res->setFillColor(sf::Color::Red);
+        this->name.setString(name);
+        this->name.setCharacterSize(30);
+        this->name.setFillColor(sf::Color::Red);
+
+        this->player1Res.setString("Player1: " + std::to_string(result.first));
+        this->player1Res.setCharacterSize(30);
+        this->player1Res.setFillColor(sf::Color::Red);
+
+        this->player2Res.setString("Player2: " + std::to_string(result.second));
+        this->player2Res.setCharacterSize(30);
+        this->player2Res.setFillColor(sf::Color::Red);
+
         this->rect.setFillColor(sf::Color::Black);
     }
 

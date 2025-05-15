@@ -91,7 +91,6 @@ namespace HEX {
         *  bfs() - util for dist() returns distance between two HexNodes !!Must clearVisited() after every call!!
         */
         auto bfs(const HexNode &src, const HexNode &dest) -> int;
-
         /*
          *  clearVisited() - util for dist() clears visited field for every HexNode
          */
