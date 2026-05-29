@@ -349,14 +349,12 @@ int main() {
                           font);
     SaveMenuComponents saveMenu(font, nm.list, gameState);
 
-    // Button Generations
     auto resultButtons = ButtonGen::resultButtons(font, gameState);
     auto inGameButtons = ButtonGen::inGameButtons(font, gameState);
     auto menuButtons = ButtonGen::menuButtons(font, gameState, window);
 
     std::pair<HEX::HexNode *, HEX::HexNode *> moveToMake;
 
-    // Clean, Self-Documenting Main Application Loop
     while (window.isOpen()) {
         handleInput(window, gameState, gameList, saveMenu, nm, loadBackButton,
                     inGameButtons, saveMenu.buttons, menuButtons, resultButtons, moveToMake);
